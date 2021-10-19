@@ -10,9 +10,10 @@ import java.net.URL;
 @SpringBootApplication
 public class MarvelApiApplication {
 
-	public static void main(String[] args) throws MalformedURLException {
+	public static void main(String[] args) throws Exception {
 
 		APIDataRequest APIDataRequest = new APIDataRequest();
+
 
 	}
 }

@@ -8,6 +8,10 @@ import java.io.IOException;
 
 public class APIDataRequestTest {
 
+    @Test
+    void contextLoads() {
+    }
+
     APIDataRequest apiRequest = new APIDataRequest();
 
     public APIDataRequestTest() throws IOException, ParseException {

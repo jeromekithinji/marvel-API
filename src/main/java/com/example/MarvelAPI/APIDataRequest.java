@@ -3,6 +3,7 @@ package com.example.MarvelAPI;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -21,7 +22,6 @@ public class APIDataRequest {
         //Getting the connection
         String mysqlUrl = "jdbc:mysql://localhost:3306/marvelApi";
 
-//        String mysqlUrl = "jdbc:mysql://${MYSQL_HOST:localhost}:3306/nsight";
         Connection databaseCon = DriverManager.getConnection(mysqlUrl, "root", "12345678");
         System.out.println("Connection established......");
         return databaseCon;
@@ -29,12 +29,16 @@ public class APIDataRequest {
 
     HttpURLConnection conn;
 
-    URL url = new URL("http://gateway.marvel.com/v1/public/characters?ts=1&apikey=89c9ab3aca2e0160d0feaae4b3527845&hash=a974f8a431e9a8d6c922b5e68234d21e");
+    URL url = new URL("http://gateway.marvel.com/v1/public/characters?limit=100&ts=1&apikey=89c9ab3aca2e0160d0feaae4b3527845&hash=a974f8a431e9a8d6c922b5e68234d21e");
 
     public APIDataRequest() throws MalformedURLException {
     }
 
+    @Autowired
+    ICharacterRepository repository;
+
     public void getAPI() throws Exception {
+
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
@@ -63,25 +67,36 @@ public class APIDataRequest {
             JSONArray jsonArray = (JSONArray) obj.get("results");
             JSONObject works = (JSONObject) jsonArray.get(6);
 //            System.out.println(works);
-            System.out.println(works.get("name"));
-            System.out.println(works.get("id"));
-            System.out.println(jsonArray);
+//            System.out.println(works.get("name"));
+//            System.out.println(works.get("id"));
+//            System.out.println(jsonArray);
 
             Connection databaseCon = ConnectToDB();
-            PreparedStatement pstmt = databaseCon.prepareStatement("INSERT INTO characters values (?, ?, ?, ? )");
+//            PreparedStatement pstmt = databaseCon.prepareStatement("INSERT INTO Character values (?, ?, ?, ? )");
+            PreparedStatement pstmt = databaseCon.prepareStatement("INSERT INTO marvelAPI.Character(id, name, description, thumbnail) VALUES (?, ?, ?, ?)");
+
 
             for(Object object : jsonArray) {
+                Character character = new Character();
                 JSONObject record = (JSONObject) object;
-                Long id = (Long) record.get("id");
+//                long id = (long) record.get("id");
+                int id = (int) (long) record.get("id");
+                character.setId(id);
                 String name = (String) record.get("name");
+                character.setName(name);
                 String description = (String) record.get("description");
+                character.setDescription(description);
                 String thumbnail = null;
-                pstmt.setLong(1, id);
-                pstmt.setString(2, name);
-                pstmt.setString(3, description);
-                pstmt.setString(4, thumbnail);
-                pstmt.executeUpdate();
+                character.setThumbnail("null");
+//                pstmt.setInt(1, (int) id);
+//                pstmt.setString(2, name);
+//                pstmt.setString(3, description);
+//                pstmt.setString(4, thumbnail);
+//                pstmt.executeUpdate();
+                System.out.println("This is the " + character.getId());
+                repository.save(character);
             }
+
             System.out.println("Records inserted.....");
         }
 
