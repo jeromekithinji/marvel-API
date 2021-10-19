@@ -1,17 +1,16 @@
-package com.example.MarvelAPI;
+package com.example.MarvelAPI.services;
 
+import com.example.MarvelAPI.repository.ICharacterRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.util.Scanner;
 
 public class APIDataRequest {
@@ -37,7 +36,7 @@ public class APIDataRequest {
     @Autowired
     ICharacterRepository repository;
 
-    public void getAPI() throws Exception {
+    public JSONArray getAPI() throws Exception {
 
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -65,39 +64,18 @@ public class APIDataRequest {
             JSONObject data_obj = (JSONObject) parse.parse(inline);
             JSONObject obj = (JSONObject) data_obj.get("data");
             JSONArray jsonArray = (JSONArray) obj.get("results");
-            JSONObject works = (JSONObject) jsonArray.get(6);
+            return jsonArray;
+
+//            JSONObject works = (JSONObject) jsonArray.get(6);
 //            System.out.println(works);
 //            System.out.println(works.get("name"));
 //            System.out.println(works.get("id"));
 //            System.out.println(jsonArray);
 
-            Connection databaseCon = ConnectToDB();
-//            PreparedStatement pstmt = databaseCon.prepareStatement("INSERT INTO Character values (?, ?, ?, ? )");
-            PreparedStatement pstmt = databaseCon.prepareStatement("INSERT INTO marvelAPI.Character(id, name, description, thumbnail) VALUES (?, ?, ?, ?)");
+//            Connection databaseCon = ConnectToDB();
+////            PreparedStatement pstmt = databaseCon.prepareStatement("INSERT INTO Character values (?, ?, ?, ? )");
+//            PreparedStatement pstmt = databaseCon.prepareStatement("INSERT INTO marvelAPI.Character(id, name, description, thumbnail) VALUES (?, ?, ?, ?)");
 
-
-            for(Object object : jsonArray) {
-                Character character = new Character();
-                JSONObject record = (JSONObject) object;
-//                long id = (long) record.get("id");
-                int id = (int) (long) record.get("id");
-                character.setId(id);
-                String name = (String) record.get("name");
-                character.setName(name);
-                String description = (String) record.get("description");
-                character.setDescription(description);
-                String thumbnail = null;
-                character.setThumbnail("null");
-//                pstmt.setInt(1, (int) id);
-//                pstmt.setString(2, name);
-//                pstmt.setString(3, description);
-//                pstmt.setString(4, thumbnail);
-//                pstmt.executeUpdate();
-                System.out.println("This is the " + character.getId());
-                repository.save(character);
-            }
-
-            System.out.println("Records inserted.....");
         }
 
     }

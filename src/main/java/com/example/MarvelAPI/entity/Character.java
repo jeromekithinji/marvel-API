@@ -1,9 +1,11 @@
-package com.example.MarvelAPI;
+package com.example.MarvelAPI.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="Character")
 public class Character {
 
     @Id

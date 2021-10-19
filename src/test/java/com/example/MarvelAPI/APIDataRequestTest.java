@@ -1,5 +1,6 @@
 package com.example.MarvelAPI;
 
+import com.example.MarvelAPI.services.APIDataRequest;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

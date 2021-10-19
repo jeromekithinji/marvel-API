@@ -12,7 +12,9 @@ public class MarvelApiApplication {
 
 	public static void main(String[] args) throws Exception {
 
-		APIDataRequest APIDataRequest = new APIDataRequest();
+		SpringApplication.run(MarvelApiApplication.class, args);
+
+//		APIDataRequest APIDataRequest = new APIDataRequest();
 
 
 	}
